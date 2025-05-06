@@ -1,0 +1,296 @@
+<?php
+// namespace App\Http\Controllers;
+
+// use Illuminate\Http\Request;
+// use App\Models\Order;
+// use App\Models\Medication;
+
+// class OrderController extends Controller
+// {
+//     // عرض جميع الطلبات
+//     public function index()
+//     {
+//         $orders = Order::all();
+//         return view('orders.index', compact('orders'));
+//     }
+
+//     // الموافقة على الطلب
+//     public function validateOrder($id)
+//     {
+//         $order = Order::findOrFail($id);
+//         $order->status = 'validé';
+//         $order->save();
+
+//         return redirect()->route('orders.index')->with('success', '✅ تمت الموافقة على الطلب بنجاح');
+//     }
+
+//     // رفض الطلب
+//     public function rejectOrder($id)
+//     {
+//         $order = Order::findOrFail($id);
+//         $order->status = 'refusé';
+//         $order->save();
+
+//         return redirect()->route('orders.index')->with('error', '❌ تم رفض الطلب');
+//     }
+
+//     // تخزين الطلب
+//     public function store(Request $request)
+// {
+//     // التحقق من المدخلات
+//     $request->validate([
+//         'customer_name' => 'required|string|max:255',
+//         'customer_phone' => 'required|string|max:20',
+//         'address' => 'required|string',
+//         'prescription' => 'nullable|file|mimes:jpg,png,pdf|max:2048',
+//         'cart_data' => 'required', // ✅ إضافة التحقق من السلة
+//     ]);
+
+//     // رفع الوصفة الطبية
+//     $filePath = $request->hasFile('prescription') 
+//                 ? $request->file('prescription')->store('prescriptions', 'public') 
+//                 : null;
+
+//     // تحويل بيانات السلة من JSON إلى Array
+//     $cart = json_decode($request->cart_data, true);
+
+//     // إدخال الطلبات في قاعدة البيانات
+//     foreach ($cart as $id => $details) {
+//         Order::create([
+//             'customer_name' => $request->customer_name,
+//             'customer_phone' => $request->customer_phone,
+//             'address' => $request->address,
+//             'medication_id' => $id,
+//             'quantity' => $details['quantity'],
+//             'total_price' => $details['price'] * $details['quantity'],
+//             'prescription' => $filePath,
+//             'status' => 'en attente',
+//         ]);
+//     }
+
+//     // تفريغ السلة بعد الطلب
+//     session()->forget('cart');
+
+//     return redirect()->route('medications.purchase')->with('success', '✅ تم إرسال الطلب بنجاح.');
+// }
+//     public function checkout()
+//     {
+//     $medications = Medication::all(); // ✅ جلب جميع الأدوية
+//     return view('cart.checkout', compact('medications')); // ✅ إرسالها إلى العرض
+// }
+
+// }
+
+
+
+// namespace App\Http\Controllers;
+
+// use App\Models\Cmd;
+// use Illuminate\Http\Request;
+
+// class OrderController extends Controller
+// {
+//     public function store(Request $request)
+//     {
+//         $validated = $request->validate([
+//             'customer_name' => 'required|string|max:255',
+//             'address' => 'required|string',
+//             'phone' => 'required|string|max:20',
+//             'prescription' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+//             'medications' => 'required|array',
+//             'total_price' => 'required|numeric',
+//         ]);
+
+//         // حفظ صورة الوصفة الطبية
+//         $imagePath = $request->file('prescription')->store('prescriptions', 'public');
+
+//         // إنشاء الطلب
+//         Cmd::create([
+//             'customer_name' => $validated['customer_name'],
+//             'address' => $validated['address'],
+//             'phone' => $validated['phone'],
+//             'prescription' => $imagePath,
+//             'medications' => json_encode($validated['medications']),
+//             'total_price' => $validated['total_price'],
+//             'status' => 'En attente',
+//         ]);
+
+//         return redirect()->back()->with('success', 'تم تسجيل طلبك بنجاح!');
+//     }
+// }
+
+namespace App\Http\Controllers;
+
+use App\Models\Cmd;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller; // هذا هو المهم
+use App\Models\Medication;
+
+class OrderController extends Controller
+{
+    public function store(Request $request)
+    {
+        try {
+            // Debug information
+            \Log::info('Reçu une nouvelle commande', [
+                'post_data' => $request->all(),
+                'has_file' => $request->hasFile('prescription'),
+                'cart_data_length' => strlen($request->input('cart_data', '')),
+                'user_agent' => $request->header('User-Agent'),
+                'method' => $request->method(),
+                'url' => $request->fullUrl()
+            ]);
+            
+            // Vérifier si le panier est dans la session ou dans la requête
+            $cartData = $request->input('cart_data');
+            if (empty($cartData) && session()->has('cart')) {
+                $cartData = json_encode(session('cart'));
+                \Log::info('Utilisation du panier depuis la session', ['cart' => $cartData]);
+            }
+            
+            if (empty($cartData)) {
+                return redirect()->back()
+                    ->with('error', 'Votre panier est vide. Veuillez ajouter des produits avant de passer commande.')
+                    ->withInput();
+            }
+            
+            // Validation des données de base
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'phone' => 'required|string|max:20',
+                'address' => 'required|string',
+                'prescription' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ], [
+                'prescription.required' => 'L\'ordonnance médicale est requise',
+                'prescription.image' => 'Le fichier doit être une image',
+                'prescription.mimes' => 'Formats acceptés: jpeg, png, jpg, gif',
+                'name.required' => 'Votre nom est requis',
+                'phone.required' => 'Votre numéro de téléphone est requis',
+                'address.required' => 'Votre adresse est requise',
+            ]);
+
+            // Décoder les données du panier
+            $cart = json_decode($cartData, true);
+            
+            // Vérifier que le panier n'est pas vide
+            if (empty($cart) || !is_array($cart)) {
+                return redirect()->back()
+                    ->with('error', 'Votre panier est vide ou contient des données incorrectes.')
+                    ->withInput();
+            }
+            
+            // Traitement de l'image d'ordonnance
+            if ($request->hasFile('prescription') && $request->file('prescription')->isValid()) {
+                $imagePath = $request->file('prescription')->store('prescriptions', 'public');
+            } else {
+                return redirect()->back()
+                    ->with('error', 'L\'ordonnance est requise et doit être une image valide.')
+                    ->withInput();
+            }
+            
+            // Création de la commande
+            $commande = Cmd::create([
+                'customer_name' => $request->input('name'),
+                'phone' => $request->input('phone'),
+                'address' => $request->input('address'),
+                'prescription' => $imagePath,
+                'medications' => $request->input('cart_data'), 
+                'total_price' => $this->calculateTotalPrice($cart),
+                'pharmacist_id' => auth()->check() ? auth()->id() : null, // Vérifier si l'utilisateur est connecté
+                'status' => 'En attente'
+            ]);
+            
+            if ($commande) {
+                // Vider le panier après une commande réussie
+                session()->forget('cart');
+                
+                // Rediriger vers une page de confirmation avec un message de succès
+                return redirect()->route('purchase.page')
+                    ->with('success', '✅ Votre commande a été soumise avec succès! Nous vous contacterons bientôt.');
+            }
+
+            return redirect()->back()
+                ->with('error', 'Une erreur est survenue lors de l\'enregistrement de votre commande. Veuillez réessayer.')
+                ->withInput();
+            
+        } catch (\Exception $e) {
+            // Log de l'erreur pour le débogage
+            \Log::error('Erreur lors de la création de la commande: ' . $e->getMessage());
+            
+            return redirect()->back()
+                ->with('error', 'Une erreur inattendue s\'est produite. Veuillez réessayer ou contacter le support.')
+                ->withInput();
+        }
+    }
+    
+
+    private function calculateTotalPrice($cart)
+    {
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+        return $total;
+    }
+    
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        
+        // Récupération des commandes en fonction de l'utilisateur connecté (pharmacien)
+        $orders = Cmd::when($search, function($query, $search) {
+            return $query->where('customer_name', 'like', "%{$search}%")
+                         ->orWhere('phone', 'like', "%{$search}%") 
+                         ->orWhere('status', 'like', "%{$search}%");
+        })
+        ->where('pharmacist_id', auth()->id()) // N'afficher que les commandes associées au pharmacien connecté
+        ->orderBy('created_at', 'desc')
+        ->paginate(8); 
+    
+        return view('orders.index', compact('orders'));
+    }
+    
+    /**
+     * Met à jour le statut d'une commande
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:En attente,Validé,Refusé'
+        ]);
+        
+        $order = Cmd::findOrFail($id);
+        $order->status = $request->status;
+        $order->save();
+        
+        return redirect()->route('commandes.liste')
+            ->with('success', 'Le statut de la commande a été mis à jour avec succès.');
+    }
+    public function checkout(Request $request)
+    {
+        $cart = session('cart', []);
+
+        if (empty($cart)) {
+            return redirect()->route('purchase')->with('error', 'السلة فارغة');
+        }
+
+    }    
+    public function updateCart(Request $request)
+    {
+        $medicationId = $request->input('medication_id');
+        $quantity = $request->input('quantity');
+
+        if (is_numeric($medicationId) && is_numeric($quantity)) {
+            $cart = session('cart', []);
+            if (is_array($cart) && isset($cart[$medicationId])) {
+                $cart[$medicationId]['quantity'] = $quantity;
+                session(['cart' => $cart]);
+                return response()->json(['message' => 'Le panier a été mis à jour.']);
+            }
+            return response()->json(['message' => 'Le panier n\'est pas adapté.'], 400);
+        }
+        return response()->json(['message' => 'Les paramètres sont invalides.'], 400);
+    }
+    
+
+}

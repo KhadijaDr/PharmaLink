@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Cmd extends Model
+{
+    use HasFactory;
+
+    // Constantes pour les statuts
+    const STATUS_PENDING = 'En attente';
+    const STATUS_APPROVED = 'Validé';
+    const STATUS_REJECTED = 'Refusé';
+    
+    /**
+     * Le nom de la table associée au modèle.
+     *
+     * @var string
+     */
+    protected $table = 'commandes';
+
+    /**
+     * Les attributs qui sont mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'customer_name',
+        'phone',
+        'address',
+        'prescription',
+        'medications',
+        'total_price',
+        'status',
+        'pharmacist_id',
+    ];
+
+    /**
+     * Les attributs qui doivent être castés.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
+     * Valeurs par défaut pour les attributs
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'status' => 'En attente',
+    ];
+} 
