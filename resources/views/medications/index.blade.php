@@ -49,9 +49,9 @@
                                     </td>
                                     <td>
                                         @if ($medication->image)
-                                            <img src="" alt="Image du médicament" class="med-thumbnail">
+                                            <img src="{{ asset('storage/' . $medication->image) }}" alt="Image du médicament" class="med-thumbnail">
                                         @else
-                                            <span class="no-image"><i class="fas fa-camera-slash"></i></span>
+                                            <img src="{{ asset('images/' . ($loop->index % 5 == 0 ? 'paracetamol.jpg' : ($loop->index % 5 == 1 ? 'VeinUp.png' : ($loop->index % 5 == 2 ? 'g.jpg' : ($loop->index % 5 == 3 ? 'unnamed.jpg' : 'pharmacie.jpg'))))) }}" alt="Image du médicament" class="med-thumbnail">
                                         @endif
                                     </td>
                                     <td>{{ \Carbon\Carbon::parse($medication->expiry_date)->format('Y-m-d') }}</td>
@@ -97,7 +97,7 @@
             @endif
         </div>
     </div>
-->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
     <style>

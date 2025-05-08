@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('inquiries', function (Blueprint $table) {
+            // Vérifier si la colonne existe déjà avant de l'ajouter
+            if (!Schema::hasColumn('inquiries', 'read')) {
             $table->boolean('read')->default(false)->after('message');
+            }
         });
     }
 
@@ -22,7 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('inquiries', function (Blueprint $table) {
+            if (Schema::hasColumn('inquiries', 'read')) {
             $table->dropColumn('read');
+            }
         });
     }
 };

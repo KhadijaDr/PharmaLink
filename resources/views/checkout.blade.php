@@ -111,16 +111,7 @@
                                     <i class="fas fa-file-prescription me-2 text-primary"></i>Ordonnance médicale
                                 </label>
                                 <div class="file-upload-container @error('prescription') is-invalid @enderror">
-                                    <input type="file" name="prescription" id="prescription" class="form-control form-control-lg d-none" accept="image/*" required>
-                                    <label for="prescription" class="file-upload-label">
-                                        <div class="upload-icon">
-                                            <i class="fas fa-cloud-upload-alt"></i>
-                                        </div>
-                                        <div class="upload-text">
-                                            <p>Cliquez pour télécharger</p>
-                                            <small>Formats acceptés: JPG, PNG</small>
-                                        </div>
-                                    </label>
+                                    <input type="file" name="prescription" id="prescription" class="form-control form-control-lg" accept="image/*" required>
                                     <div id="file-name-display" class="mt-2 text-center"></div>
                                 </div>
                                 @error('prescription')
@@ -130,15 +121,15 @@
 
                             <input type="hidden" name="cart_data" id="cart_data" value="{{ json_encode(session('cart', [])) }}">
 
-                            <button type="submit" id="confirm-order-btn" class="btn w-100 py-3 confirm-order-btn" onclick="submitOrderForm()">
+                            <button type="submit" id="confirm-order-btn" class="btn btn-primary w-100 py-3 confirm-order-btn">
                                 <i class="fas fa-lock me-2"></i> CONFIRMER LA COMMANDE
                             </button>
                         </form>
 
                         <div class="mt-3 text-center">
-                            <button type="button" id="manual-submit-btn" class="btn btn-success">
-                                <i class="fas fa-paper-plane me-2"></i> ENVOYER COMMANDE (ALTERNATIVE)
-                            </button>
+                            <a href="{{ url('/purchase') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Retour à la pharmacie
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -224,6 +215,55 @@
     .checkout-container {
         padding-bottom: 5rem;
         margin-top: 85px;
+    }
+
+    /* État de soumission du formulaire */
+    body.form-submitting::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 9998;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    body.form-submitting::before {
+        content: 'Traitement en cours...';
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 2rem;
+        background-color: white;
+        border-radius: 1rem;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        font-weight: bold;
+        color: #0d6efd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 300px;
+    }
+
+    body.form-submitting::before::after {
+        content: '';
+        width: 2rem;
+        height: 2rem;
+        border: 4px solid rgba(13, 110, 253, 0.2);
+        border-top-color: #0d6efd;
+        border-radius: 50%;
+        margin-left: 1rem;
+        animation: spinner 1s linear infinite;
+    }
+
+    @keyframes spinner {
+        to { transform: rotate(360deg); }
     }
 
     /* Hero Section */
@@ -637,89 +677,142 @@
 </style>
 
 <script>
-    // Fonction de soumission directe
-    function submitOrderForm() {
-        const form = document.getElementById('checkout-form');
-        const prescriptionInput = document.getElementById('prescription');
-        
-        // Vérifier si une ordonnance a été téléchargée
-        if (prescriptionInput && (!prescriptionInput.files || !prescriptionInput.files[0])) {
-            alert('Veuillez télécharger votre ordonnance médicale');
-            return false;
-        }
-        
-        // Soumettre le formulaire manuellement
-        if (form) {
-            form.submit();
-        }
-        
-        return false;
-    }
-    
     document.addEventListener('DOMContentLoaded', function() {
-        // Sélection des éléments du DOM
+        // Afficher le nom du fichier d'ordonnance sélectionné
         const prescriptionInput = document.getElementById('prescription');
         const fileNameDisplay = document.getElementById('file-name-display');
-        const fileUploadLabel = document.querySelector('.file-upload-label');
-        const form = document.getElementById('checkout-form');
-        const submitBtn = document.getElementById('confirm-order-btn');
-        const manualSubmitBtn = document.getElementById('manual-submit-btn');
+        const checkoutForm = document.getElementById('checkout-form');
+        const cartDataInput = document.getElementById('cart_data');
+        const submitButton = document.getElementById('confirm-order-btn');
+        const floatingButton = document.getElementById('floating-submit-btn');
         
-        // Gestion du bouton de soumission manuelle
-        if (manualSubmitBtn) {
-            manualSubmitBtn.addEventListener('click', function() {
-                submitOrderForm();
-            });
-        }
-        
-        // Gestion du téléchargement de l'ordonnance
         if (prescriptionInput && fileNameDisplay) {
             prescriptionInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
+                if (this.files.length > 0) {
                     const fileName = this.files[0].name;
-                    
-                    // Afficher le nom du fichier
-                    fileUploadLabel.classList.add('file-uploaded');
-                    fileNameDisplay.innerHTML = '<span class="badge bg-success p-2"><i class="fas fa-check-circle me-1"></i> ' + fileName + '</span>';
                     fileNameDisplay.style.display = 'block';
+                    fileNameDisplay.textContent = fileName;
+                    fileNameDisplay.className = 'mt-2 text-center text-success';
                     
-                    // Afficher un aperçu de l'image
-                    if (this.files[0].type.match('image.*')) {
-                        let reader = new FileReader();
-                        reader.onload = function(e) {
-                            fileUploadLabel.innerHTML = `
-                                <div class="upload-preview">
-                                    <img src="${e.target.result}" class="img-preview">
-                                    <div class="overlay-text">
-                                        <i class="fas fa-sync-alt"></i> Changer
-                                    </div>
-                                </div>
-                            `;
-                        }
-                        reader.readAsDataURL(this.files[0]);
+                    // Ajouter un badge pour indiquer que le fichier est sélectionné
+                    const fileContainer = prescriptionInput.closest('.file-upload-container');
+                    if (fileContainer) {
+                        fileContainer.classList.add('file-uploaded');
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-success position-absolute top-0 end-0 mt-2 me-2';
+                        badge.innerHTML = '<i class="fas fa-check"></i> Fichier sélectionné';
+                        fileContainer.appendChild(badge);
+                    }
+                } else {
+                    fileNameDisplay.style.display = 'none';
+                    fileNameDisplay.textContent = '';
+                    
+                    // Retirer le badge si le fichier est désélectionné
+                    const fileContainer = prescriptionInput.closest('.file-upload-container');
+                    if (fileContainer) {
+                        fileContainer.classList.remove('file-uploaded');
+                        const badge = fileContainer.querySelector('.badge');
+                        if (badge) badge.remove();
                     }
                 }
             });
         }
         
-        // Assurer que le bouton flottant est visible comme solution de secours
-        const floatingBtn = document.getElementById('floating-submit-btn');
-        if (floatingBtn) {
-            floatingBtn.style.display = 'block';
-            const floatingButton = floatingBtn.querySelector('button');
-            if (floatingButton) {
-                floatingButton.addEventListener('click', function() {
-                    submitOrderForm();
-                });
+        // S'assurer que les données du panier sont toujours à jour avant la soumission
+        function updateCartData() {
+            if (cartDataInput) {
+                // Essayer d'abord de récupérer le panier du localStorage si disponible
+                const localCart = localStorage.getItem('pharmalink_cart');
+                if (localCart && localCart !== '[]' && localCart !== '{}') {
+                    cartDataInput.value = localCart;
+                    console.log('Panier récupéré du localStorage');
+                    return true;
+                }
+                
+                // Si le panier en session est vide ou invalide, essayer de le récupérer des cookies
+                if (!cartDataInput.value || cartDataInput.value === '[]' || cartDataInput.value === '{}') {
+                    // Fonction pour lire un cookie par son nom
+                    function getCookie(name) {
+                        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                        return match ? decodeURIComponent(match[2]) : null;
+                    }
+                    
+                    const cartCookie = getCookie('cart_data');
+                    if (cartCookie && cartCookie !== '[]' && cartCookie !== '{}') {
+                        cartDataInput.value = cartCookie;
+                        console.log('Panier récupéré des cookies');
+                        return true;
+                    }
+                } else {
+                    // Le panier est déjà présent dans le champ hidden
+                    return true;
+                }
+                
+                console.error('Panier vide ou invalide');
+                return false;
             }
+            return false;
+        }
+
+        if (checkoutForm) {
+            // Mettre à jour les données du panier au chargement de la page
+            updateCartData();
+            
+            checkoutForm.addEventListener('submit', function(e) {
+                // Désactiver le bouton lors de la soumission pour éviter les doubles soumissions
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> TRAITEMENT EN COURS...';
+                }
+                
+                // Mettre à jour les données du panier avant soumission
+                if (!updateCartData()) {
+                    e.preventDefault();
+                    alert('Votre panier est vide. Veuillez ajouter des produits avant de confirmer votre commande.');
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = '<i class="fas fa-lock me-2"></i> CONFIRMER LA COMMANDE';
+                    }
+                    return false;
+                }
+
+                // Vérifier que le fichier d'ordonnance est sélectionné
+                if (prescriptionInput && prescriptionInput.files.length === 0) {
+                    e.preventDefault();
+                    alert('Veuillez télécharger une ordonnance médicale.');
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = '<i class="fas fa-lock me-2"></i> CONFIRMER LA COMMANDE';
+                    }
+                    return false;
+                }
+                
+                // Afficher une indication visuelle que la soumission est en cours
+                document.body.classList.add('form-submitting');
+                
+                // Si tout est valide, soumettre le formulaire
+                return true;
+            });
         }
         
-        // Ajouter une soumission alternative avec Ctrl+Enter
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'Enter') {
-                submitOrderForm();
+        // Gestion du bouton flottant pour soumettre le formulaire
+        if (floatingButton && checkoutForm) {
+                floatingButton.addEventListener('click', function() {
+                // Déclencher la soumission du formulaire
+                checkoutForm.dispatchEvent(new Event('submit'));
+                });
+            
+            // Afficher le bouton flottant lors du défilement
+            window.addEventListener('scroll', function() {
+                const submitButtonRect = submitButton.getBoundingClientRect();
+                // Si le bouton de soumission n'est pas visible à l'écran
+                if (submitButtonRect.bottom < 0 || submitButtonRect.top > window.innerHeight) {
+                    floatingButton.style.display = 'block';
+                } else {
+                    floatingButton.style.display = 'none';
             }
         });
+        }
     });
 </script>
 @endsection

@@ -35,6 +35,7 @@ class Cmd extends Model
         'total_price',
         'status',
         'pharmacist_id',
+        'user_id',
     ];
 
     /**
@@ -45,6 +46,8 @@ class Cmd extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'medications' => 'json',
+        'total_price' => 'decimal:2',
     ];
 
     /**
@@ -54,5 +57,22 @@ class Cmd extends Model
      */
     protected $attributes = [
         'status' => 'En attente',
+        'user_id' => null,
     ];
+    
+    /**
+     * Relation avec le pharmacien (si applicable)
+     */
+    public function pharmacist()
+    {
+        return $this->belongsTo(User::class, 'pharmacist_id');
+    }
+    
+    /**
+     * Accesseur pour formater le prix total
+     */
+    public function getFormattedTotalPriceAttribute()
+    {
+        return number_format($this->total_price, 2) . ' DH';
+    }
 } 

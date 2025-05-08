@@ -2,7 +2,7 @@
 
 @section('content')
 <!-- Section Hero avec Image de Fond -->
-<div class="hero-section position-relative" style="margin-top: 80px; background-image: url('{{ asset('images/pharmacie.jpg') }}'); background-size: cover; background-position: center; height: 600px;">
+<div class="hero-section position-relative" style="margin-top: 50px; background-image: url('{{ asset('images/pharmacie.jpg') }}'); background-size: cover; background-position: center; height: 600px;">
     <div class="hero-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);"></div>
     <div class="container py-5">
         <div class="row align-items-center py-5">
@@ -336,6 +336,42 @@
     </div>
 </div>
 
+<!-- Footer Principal -->
+@if(request()->is('pharmacy') || request()->is('about') || request()->is('privacy-policy') || request()->is('terms') || request()->is('purchase') || request()->routeIs('articles.show'))
+    <footer class="custom-footer text-white py-5 mt-5" style="background: linear-gradient(120deg, #0d2235 0%, #1976d2 100%); width: 100vw; margin-left: calc(50% - 50vw);">
+        <div class="container-fluid px-5">
+            <div class="row align-items-center gy-4">
+                <!-- Colonne Logo + Description -->
+                <div class="col-lg-4 col-md-12 d-flex flex-column align-items-lg-start align-items-center text-lg-start text-center mb-4 mb-lg-0">
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="{{ asset('logo.png') }}" alt="Logo" style="height: 70px; margin-right: 18px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <h4 class="mb-0 fw-bold">PharmaLink</h4>
+                    </div>
+                    <p class="footer-desc mt-2 mb-0">Votre santé, <span class="footer-highlight">notre priorité</span> : médicaments certifiés, livraison express, confidentialité et assistance 24/7.</p>
+                </div>
+                <!-- Colonne Liens -->
+                <div class="col-lg-4 col-md-12 d-flex flex-column align-items-center justify-content-center mb-4 mb-lg-0">
+                    <div class="footer-links d-flex flex-row flex-wrap justify-content-center align-items-center gap-4 mb-2">
+                        <a href="{{ route('about') }}" class="footer-link"><i class="fas fa-info-circle me-2"></i>À propos de nous</a>
+                        <a href="{{ route('privacy-policy') }}" class="footer-link"><i class="fas fa-user-secret me-2"></i>Politique de confidentialité</a>
+                        <a href="{{ route('terms') }}" class="footer-link"><i class="fas fa-file-contract me-2"></i>Conditions générales</a>
+                    </div>
+                    <div class="footer-separator my-2"></div>
+                    <p class="mb-0 mt-2 small">© 2025 PharmaLink. Tous droits réservés</p>
+                </div>
+                <!-- Colonne Réseaux sociaux -->
+                <div class="col-lg-4 col-md-12 d-flex justify-content-lg-end justify-content-center align-items-center">
+                    <div class="social-links d-flex gap-3">
+                        <a href="https://facebook.com" aria-label="Facebook" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com" aria-label="Twitter" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com" aria-label="Instagram" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+@endif
+
 <style>
     /* Support RTL pour l'arabe */
     body {
@@ -571,6 +607,137 @@
     .product-card:hover {
         transform: translateY(-10px);
         transition: transform 0.3s ease;
+    }
+
+    /* Styles supplémentaires pour le footer */
+    .custom-footer {
+        background: linear-gradient(120deg, #0d2235 0%, #1976d2 100%);
+        color: #fff;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        box-shadow: 0 -2px 16px rgba(0,0,0,0.08);
+        border-top: 3px solid #1976d2;
+        position: relative;
+        z-index: 10;
+        overflow: hidden;
+    }
+
+    .footer-desc {
+        font-size: 1.08rem;
+        color: #e3eaf5;
+        line-height: 1.5;
+        font-weight: 400;
+        max-width: 370px;
+    }
+
+    .footer-highlight {
+        color: #ffd600;
+        font-weight: 600;
+    }
+
+    .footer-links {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 1.5rem !important;
+        margin-bottom: 0.2rem !important;
+        width: 100%;
+        overflow: visible !important;
+    }
+
+    .footer-link {
+        white-space: nowrap;
+        font-size: 1rem;
+        padding: 6px 10px;
+    }
+
+    @media (max-width: 767px) {
+        .footer-links {
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            gap: 0.7rem !important;
+            font-size: 0.95rem;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100%;
+            margin-bottom: 0.2rem !important;
+            overflow: visible !important;
+        }
+        .footer-link {
+            font-size: 0.95rem;
+            padding: 4px 6px;
+        }
+    }
+
+    .footer-separator {
+        width: 80%;
+        height: 2px;
+        background: linear-gradient(90deg, #1976d2 0%, #ffd600 100%);
+        border-radius: 2px;
+        margin: 0 auto;
+        opacity: 0.5;
+    }
+
+    .social-links .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.10);
+        color: #fff;
+        font-size: 1.5rem;
+        transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px rgba(25,118,210,0.08);
+    }
+
+    .social-links .social-icon:hover {
+        background: #ffd600;
+        color: #1976d2;
+        transform: translateY(-4px) scale(1.10);
+        box-shadow: 0 4px 16px rgba(25,118,210,0.18);
+    }
+
+    @media (max-width: 991px) {
+        .custom-footer .row > div {
+            justify-content: center !important;
+            text-align: center;
+        }
+        .custom-footer {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .footer-separator {
+            width: 60%;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .custom-footer {
+            padding: 2rem 0 1rem 0;
+        }
+        .footer-links {
+            flex-direction: row !important;
+            flex-wrap: wrap;
+            gap: 1rem !important;
+            margin-bottom: 0.2rem !important;
+        }
+        .footer-separator {
+            width: 90%;
+            margin: 0.5rem auto;
+        }
+        .social-links .social-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+        .footer-desc {
+            font-size: 0.98rem;
+            max-width: 100%;
+        }
     }
 </style>
 

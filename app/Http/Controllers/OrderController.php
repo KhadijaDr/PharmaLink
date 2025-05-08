@@ -123,7 +123,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cmd;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller; // هذا هو المهم
+use Illuminate\Routing\Controller;
 use App\Models\Medication;
 
 class OrderController extends Controller
@@ -136,23 +136,10 @@ class OrderController extends Controller
                 'post_data' => $request->all(),
                 'has_file' => $request->hasFile('prescription'),
                 'cart_data_length' => strlen($request->input('cart_data', '')),
-                'user_agent' => $request->header('User-Agent'),
-                'method' => $request->method(),
-                'url' => $request->fullUrl()
+                'form_method' => $request->method(),
+                'request_ip' => $request->ip(),
+                'headers' => $request->headers->all()
             ]);
-            
-            // Vérifier si le panier est dans la session ou dans la requête
-            $cartData = $request->input('cart_data');
-            if (empty($cartData) && session()->has('cart')) {
-                $cartData = json_encode(session('cart'));
-                \Log::info('Utilisation du panier depuis la session', ['cart' => $cartData]);
-            }
-            
-            if (empty($cartData)) {
-                return redirect()->back()
-                    ->with('error', 'Votre panier est vide. Veuillez ajouter des produits avant de passer commande.')
-                    ->withInput();
-            }
             
             // Validation des données de base
             $validatedData = $request->validate([
@@ -160,6 +147,7 @@ class OrderController extends Controller
                 'phone' => 'required|string|max:20',
                 'address' => 'required|string',
                 'prescription' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'cart_data' => 'required|string'
             ], [
                 'prescription.required' => 'L\'ordonnance médicale est requise',
                 'prescription.image' => 'Le fichier doit être une image',
@@ -167,62 +155,82 @@ class OrderController extends Controller
                 'name.required' => 'Votre nom est requis',
                 'phone.required' => 'Votre numéro de téléphone est requis',
                 'address.required' => 'Votre adresse est requise',
+                'cart_data.required' => 'Le panier est vide ou invalide'
             ]);
 
-            // Décoder les données du panier
-            $cart = json_decode($cartData, true);
+            \Log::info('Validation réussie, traitement du panier');
             
-            // Vérifier que le panier n'est pas vide
-            if (empty($cart) || !is_array($cart)) {
-                return redirect()->back()
-                    ->with('error', 'Votre panier est vide ou contient des données incorrectes.')
-                    ->withInput();
-            }
-            
-            // Traitement de l'image d'ordonnance
-            if ($request->hasFile('prescription') && $request->file('prescription')->isValid()) {
-                $imagePath = $request->file('prescription')->store('prescriptions', 'public');
-            } else {
-                return redirect()->back()
-                    ->with('error', 'L\'ordonnance est requise et doit être une image valide.')
-                    ->withInput();
-            }
-            
-            // Création de la commande
-            $commande = Cmd::create([
-                'customer_name' => $request->input('name'),
-                'phone' => $request->input('phone'),
-                'address' => $request->input('address'),
-                'prescription' => $imagePath,
-                'medications' => $request->input('cart_data'), 
-                'total_price' => $this->calculateTotalPrice($cart),
-                'pharmacist_id' => auth()->check() ? auth()->id() : null, // Vérifier si l'utilisateur est connecté
-                'status' => 'En attente'
-            ]);
-            
-            if ($commande) {
+            try {
+                // Calcul du prix total
+                $totalPrice = $this->calculateTotalPrice($cart);
+                \Log::info('Prix total calculé', ['total' => $totalPrice]);
+                
+                // Données pour la création de la commande
+                $commandeData = [
+                    'customer_name' => $request->input('name'),
+                    'phone' => $request->input('phone'),
+                    'address' => $request->input('address'),
+                    'prescription' => $imagePath,
+                    'medications' => $cartData,
+                    'total_price' => $totalPrice,
+                    'status' => 'En attente',
+                ];
+                
+                // Ajouter explicitement user_id et pharmacist_id
+                if (auth()->check()) {
+                    $commandeData['pharmacist_id'] = auth()->id();
+                    $commandeData['user_id'] = auth()->id();
+                } else {
+                    $commandeData['pharmacist_id'] = null;
+                    $commandeData['user_id'] = null;
+                }
+                
+                // Création de la commande
+                $commande = new Cmd();
+                foreach ($commandeData as $key => $value) {
+                    $commande->{$key} = $value;
+                }
+                $commande->save();
+                
+                \Log::info('Commande créée', ['id' => $commande->id]);
+                
+                // Mise à jour du stock pour chaque médicament
+                \Log::info('Transaction DB validée');
+                
                 // Vider le panier après une commande réussie
                 session()->forget('cart');
+                
+                \Log::info('Commande complétée avec succès', ['commande_id' => $commande->id]);
                 
                 // Rediriger vers une page de confirmation avec un message de succès
                 return redirect()->route('purchase.page')
                     ->with('success', '✅ Votre commande a été soumise avec succès! Nous vous contacterons bientôt.');
+                
+            } catch (\Exception $e) {
+                // En cas d'erreur, annuler la transaction
+                \DB::rollBack();
+                \Log::error('Erreur lors de la transaction DB', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                
+                return redirect()->route('purchase.page')
+                    ->with('error', 'Une erreur est survenue lors de l\'enregistrement de votre commande: ' . $e->getMessage())
+                    ->withInput();
             }
-
-            return redirect()->back()
-                ->with('error', 'Une erreur est survenue lors de l\'enregistrement de votre commande. Veuillez réessayer.')
-                ->withInput();
             
         } catch (\Exception $e) {
             // Log de l'erreur pour le débogage
-            \Log::error('Erreur lors de la création de la commande: ' . $e->getMessage());
+            \Log::error('Erreur lors de la création de la commande', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             
-            return redirect()->back()
-                ->with('error', 'Une erreur inattendue s\'est produite. Veuillez réessayer ou contacter le support.')
+            return redirect()->route('purchase.page')
+                ->with('error', 'Une erreur inattendue s\'est produite: ' . $e->getMessage())
                 ->withInput();
         }
     }
-    
 
     private function calculateTotalPrice($cart)
     {
@@ -250,9 +258,6 @@ class OrderController extends Controller
         return view('orders.index', compact('orders'));
     }
     
-    /**
-     * Met à jour le statut d'une commande
-     */
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
@@ -266,15 +271,18 @@ class OrderController extends Controller
         return redirect()->route('commandes.liste')
             ->with('success', 'Le statut de la commande a été mis à jour avec succès.');
     }
+
     public function checkout(Request $request)
     {
         $cart = session('cart', []);
 
         if (empty($cart)) {
-            return redirect()->route('purchase')->with('error', 'السلة فارغة');
+            return redirect()->route('purchase')->with('error', 'Le panier est vide');
         }
 
+        return view('cart.checkout', compact('cart'));
     }    
+    
     public function updateCart(Request $request)
     {
         $medicationId = $request->input('medication_id');
@@ -291,6 +299,4 @@ class OrderController extends Controller
         }
         return response()->json(['message' => 'Les paramètres sont invalides.'], 400);
     }
-    
-
 }

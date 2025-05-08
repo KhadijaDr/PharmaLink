@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Models\Order;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 
 class MedicationController extends Controller
@@ -43,13 +44,32 @@ class MedicationController extends Controller
             'supplier' => 'nullable|string',
             'quantity' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'default_image' => 'nullable|string'
         ]);
     
         $imagePath = null;
     
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('medications', 'public');
+        } elseif ($request->filled('default_image')) {
+            // Copier l'image par défaut du dossier public/images vers storage/app/public/medications
+            $defaultImage = $request->default_image;
+            $sourcePath = public_path('images/' . $defaultImage);
+            
+            if (file_exists($sourcePath)) {
+                $fileName = 'default_' . time() . '_' . $defaultImage;
+                $destinationPath = storage_path('app/public/medications/' . $fileName);
+                
+                // Créer le dossier s'il n'existe pas
+                if (!file_exists(storage_path('app/public/medications'))) {
+                    mkdir(storage_path('app/public/medications'), 0755, true);
+                }
+                
+                // Copier le fichier
+                copy($sourcePath, $destinationPath);
+                $imagePath = 'medications/' . $fileName;
+            }
         }
     
         Medication::create([
@@ -87,6 +107,7 @@ public function update(Request $request, $id)
         'price' => 'required|numeric|min:0',
         'description' => 'nullable|string',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
+        'default_image' => 'nullable|string',
         'delete_image' => 'nullable|boolean'
     ]);
 
@@ -95,12 +116,34 @@ public function update(Request $request, $id)
     $imageData = [];
     
     if ($request->hasFile('image')) {
-
+        // Si le médicament a déjà une image, la supprimer
         if ($medication->image) {
             Storage::disk('public')->delete($medication->image);
         }
         $imagePath = $request->file('image')->store('medications', 'public');
         $imageData['image'] = $imagePath;
+    } elseif ($request->filled('default_image')) {
+        // Si une image par défaut est sélectionnée
+        if ($medication->image) {
+            Storage::disk('public')->delete($medication->image);
+        }
+        
+        $defaultImage = $request->default_image;
+        $sourcePath = public_path('images/' . $defaultImage);
+        
+        if (file_exists($sourcePath)) {
+            $fileName = 'default_' . time() . '_' . $defaultImage;
+            $destinationPath = storage_path('app/public/medications/' . $fileName);
+            
+            // Créer le dossier s'il n'existe pas
+            if (!file_exists(storage_path('app/public/medications'))) {
+                mkdir(storage_path('app/public/medications'), 0755, true);
+            }
+            
+            // Copier le fichier
+            copy($sourcePath, $destinationPath);
+            $imageData['image'] = 'medications/' . $fileName;
+        }
     }
    
     if ($request->input('delete_image')) {
@@ -200,6 +243,15 @@ public function purchaseStore(Request $request)
         'prescription' => 'nullable|file|mimes:jpg,png,pdf|max:2048'
     ]);
 
+    // Récupérer le médicament et vérifier le stock disponible
+    $medication = Medication::findOrFail($request->medication_id);
+    
+    // Vérifier si la quantité demandée est disponible
+    if ($medication->quantity < $request->quantity) {
+        return back()->with('error', 'La quantité demandée n\'est pas disponible en stock. Stock actuel: ' . $medication->quantity);
+    }
+
+    // Créer la commande
     $order = new Order();
     $order->medication_id = $request->medication_id;
     $order->quantity = $request->quantity;
@@ -212,9 +264,22 @@ public function purchaseStore(Request $request)
     }
 
     $order->status = 'en attente';
+    
+    // Déduire la quantité du stock
+    $medication->quantity -= $request->quantity;
+    
+    // Enregistrer les modifications dans la base de données (transaction)
+    DB::beginTransaction();
+    try {
+        $medication->save();
     $order->save();
+        DB::commit();
+    } catch (\Exception $e) {
+        DB::rollback();
+        return back()->with('error', 'Une erreur est survenue lors du traitement de votre commande.');
+    }
 
-    return redirect()->route('medications.purchase')->with('success', 'Votre demande a été envoyée avec succès');
+    return redirect()->route('medications.purchase')->with('success', 'Votre commande a été enregistrée avec succès. Quantité restante en stock: ' . $medication->quantity);
 }
 public function show($id)
 {
@@ -223,7 +288,7 @@ public function show($id)
 }
 public function showMedications()
 {
-    $medications = Medication::all(); 
+    $medications = Medication::paginate(6); 
     return view('purchase', compact('medications'));
 }
 public function displayMedications(Request $request)

@@ -57,6 +57,52 @@
                     <div class="col-12">
         <label for="image" class="form-label fw-bold text-primary"> Image du médicament</label>
         <input type="file" class="form-control custom-input" name="image" id="image" accept="image/*">
+        
+        <div class="mt-3">
+            <label class="form-label fw-bold text-primary">Ou choisissez une image par défaut:</label>
+            <div class="row g-2 mt-1">
+                <div class="col-md-2 col-4">
+                    <div class="default-image-option">
+                        <input type="radio" name="default_image" id="img_paracetamol" value="paracetamol.jpg" class="d-none">
+                        <label for="img_paracetamol" class="w-100">
+                            <img src="{{ asset('images/paracetamol.jpg') }}" alt="Paracetamol" class="img-thumbnail default-img">
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2 col-4">
+                    <div class="default-image-option">
+                        <input type="radio" name="default_image" id="img_veinup" value="VeinUp.png" class="d-none">
+                        <label for="img_veinup" class="w-100">
+                            <img src="{{ asset('images/VeinUp.png') }}" alt="VeinUp" class="img-thumbnail default-img">
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2 col-4">
+                    <div class="default-image-option">
+                        <input type="radio" name="default_image" id="img_g" value="g.jpg" class="d-none">
+                        <label for="img_g" class="w-100">
+                            <img src="{{ asset('images/g.jpg') }}" alt="G" class="img-thumbnail default-img">
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2 col-4">
+                    <div class="default-image-option">
+                        <input type="radio" name="default_image" id="img_unnamed" value="unnamed.jpg" class="d-none">
+                        <label for="img_unnamed" class="w-100">
+                            <img src="{{ asset('images/unnamed.jpg') }}" alt="Unnamed" class="img-thumbnail default-img">
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2 col-4">
+                    <div class="default-image-option">
+                        <input type="radio" name="default_image" id="img_pharmacie" value="pharmacie.jpg" class="d-none">
+                        <label for="img_pharmacie" class="w-100">
+                            <img src="{{ asset('images/pharmacie.jpg') }}" alt="Pharmacie" class="img-thumbnail default-img">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
                 </div>
 
@@ -125,5 +171,70 @@
             background-color: #ffffff;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
+        
+        /* Styles pour le sélecteur d'images par défaut */
+        .default-image-option label {
+            cursor: pointer;
+            border: 3px solid transparent;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: block;
+        }
+        
+        .default-image-option label:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .default-image-option input:checked + label {
+            border-color: #198754;
+            box-shadow: 0 0 0 2px #198754, 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .default-img {
+            width: 100%;
+            height: 70px;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        
+        .selected-img {
+            border-color: #198754 !important;
+            box-shadow: 0 0 0 2px #198754, 0 5px 15px rgba(0,0,0,0.2) !important;
+        }
     </style>
+    
+    <script>
+        // Script pour gérer la sélection d'images par défaut
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('image');
+            const defaultImgOptions = document.querySelectorAll('input[name="default_image"]');
+            
+            // Déselectionner l'image par défaut quand une image est téléchargée
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    defaultImgOptions.forEach(option => option.checked = false);
+                }
+            });
+            
+            // Vider l'input file quand une image par défaut est sélectionnée
+            defaultImgOptions.forEach(option => {
+                option.addEventListener('change', function() {
+                    if (this.checked) {
+                        fileInput.value = '';
+                    }
+                });
+            });
+            
+            // Ajouter une classe active à l'image sélectionnée
+            const defaultImgLabels = document.querySelectorAll('.default-image-option label');
+            defaultImgLabels.forEach(label => {
+                label.addEventListener('click', function() {
+                    defaultImgLabels.forEach(l => l.classList.remove('selected-img'));
+                    this.classList.add('selected-img');
+                });
+            });
+        });
+    </script>
 @endsection

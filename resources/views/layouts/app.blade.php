@@ -1091,7 +1091,7 @@ body::before {
     }
 
     .auth-card {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.95);/*  */
         border-radius: var(--border-radius-lg);
         box-shadow: var(--box-shadow-lg);
         border: none;
@@ -1099,7 +1099,7 @@ body::before {
     }
 
     .auth-card .card-header {
-        background: var(--primary-dark);
+        background: var(--primary-dark); 
         color: white;
         border-bottom: none;
         padding: 1.5rem;
@@ -1292,67 +1292,13 @@ body::before {
             @yield('content')
         </div>
     </div>
-<!-- 
-    <div class="container mt-3 d-flex justify-content-center">
-        <div class="alert-container w-75">
-            @if (session('success'))
-                <div class="alert alert-success text-center">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                </div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger text-center">
-                    <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
-                </div>
-            @endif
-        </div>
-    </div> -->
-    
-    @if(request()->is('pharmacy') || request()->is('about') || request()->is('privacy-policy') || request()->is('terms') || request()->is('purchase') || request()->routeIs('articles.show'))
-    <footer class="custom-footer text-white text-center py-4 mt-5">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-4 text-md-start mb-3 mb-md-0 d-flex align-items-center">
-                    <img src="{{ asset('logo.png') }}" alt="Logo" style="height: 60px; margin-right: 12px;">
-                    <h5 class="mb-0">PharmaLink</h5>
-                </div>
-                <div class="col-md-4 mb-3 mb-md-0 d-flex flex-column align-items-center justify-content-center">
-                    <div class="footer-links d-flex flex-wrap justify-content-center gap-3">
-                        <a href="{{ route('about') }}" class="footer-link">À propos de nous</a>
-                        <span class="footer-sep">|</span>
-                        <a href="{{ route('privacy-policy') }}" class="footer-link">Politique de confidentialité</a>
-                        <span class="footer-sep">|</span>
-                        <a href="{{ route('terms') }}" class="footer-link">Conditions générales</a>
-                        <p class="mb-2">© 2025 PharmaLink. Tous droits réservés</p>
-                    </div>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <div class="social-links">
-                        <a href="https://facebook.com" aria-label="Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="https://twitter.com" aria-label="Twitter">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="https://instagram.com" aria-label="Instagram">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    @endif
 
-    <div id="app"></div>
-
-    <!-- تضمين Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     
-    <!-- إضافة التوكن CSRF للـ AJAX -->
+
     <script>
-        // إضافة csrf-token إلى الـ AJAX global headers
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1427,7 +1373,7 @@ function fetchNewItemsCount() {
         fetch('/get-counts')
             .then(response => response.json())
             .then(data => {
-                // تحديث badge الطلبات
+  
                 const ordersBadge = document.getElementById('pending-orders-badge');
                 if (data.pending_orders > 0) {
                     ordersBadge.classList.remove('d-none');
@@ -1448,11 +1394,10 @@ function fetchNewItemsCount() {
             .catch(error => console.error('Error:', error));
     }
 
-    // تحديث العد عند تحميل الصفحة
+
     document.addEventListener('DOMContentLoaded', function() {
         fetchNewItemsCount();
-        
-        // تحديث العد كل دقيقة (60000 مللي ثانية)
+       
         setInterval(fetchNewItemsCount, 60000);
     });
     document.addEventListener('DOMContentLoaded', function() {
