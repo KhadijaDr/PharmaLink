@@ -46,8 +46,6 @@
                     <textarea name="address" placeholder="العنوان" required class="form-control mb-2"></textarea>
                     <label>📎 تحميل وصفة طبية (اختياري):</label>
                     <input type="file" name="prescription" accept="image/*,application/pdf" class="form-control mb-2">
-
-                    <!-- ✅ تمرير بيانات السلة كـ JSON -->
                     <input type="hidden" name="cart_data" value="{{ json_encode(session('cart')) }}">
 
                     <button type="submit" class="btn btn-primary w-100">إتمام الطلب</button>
