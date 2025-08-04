@@ -6,22 +6,17 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
 
-            <!-- ✅ عنوان المقالة -->
             <h1 class="fw-bold text-primary text-center mb-4">{{ $article->title }}</h1>
-
-            <!-- ✅ صورة المقالة (إن وجدت) -->
             @if($article->image)
                 <div class="text-center mb-4">
                     <img src="{{ asset('storage/' . $article->image) }}" class="img-fluid rounded-4 shadow-sm" alt="صورة المقال" style="max-height: 400px;">
                 </div>
             @endif
 
-            <!-- ✅ محتوى المقالة -->
             <div class="card shadow-lg p-4 rounded-4">
                 <p class="fs-5 text-muted">{!! nl2br(e($article->content)) !!}</p>
             </div>
 
-            <!-- ✅ زر العودة -->
             <div class="text-center mt-4">
                 <a href="{{ route('pharmacy') }}" class="btn btn-outline-primary btn-lg">🔙 Retour aux articles</a>
             </div>
@@ -57,7 +52,7 @@
     border-radius: 30px;
 }
 #sidebar {
-            display: none; /* إخفاء الشريط الجانبي */
+            display: none; 
         }
         #main-content {
             margin-left: 0;
