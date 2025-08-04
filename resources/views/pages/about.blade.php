@@ -3,7 +3,6 @@
 @section('content')
 <div class="about-container">
     <div class="container my-5">
-        <!-- Hero Section -->
         <div class="about-hero text-center mb-5">
             <h1 class="display-4 fw-bold text-primary mb-3">
                 <i class="fas fa-hospital me-2"></i>Qui sommes-nous ?
@@ -14,8 +13,6 @@
                 <div class="divider-line"></div>
             </div>
         </div>
-
-        <!-- Main Content -->
         <div class="about-card card shadow-lg p-4 p-md-5">
             <div class="row g-4">
                 <div class="col-md-6">
@@ -89,12 +86,9 @@
 </div>
 
 <style>
-    /* Base Styles */
     .about-container {
         padding-bottom: 5rem;
     }
-    
-    /* Hero Section */
     .about-hero {
         position: relative;
         padding-top: 2rem;
@@ -119,8 +113,7 @@
         color: #0d6efd;
         font-size: 1.5rem;
     }
-    
-    /* Main Card */
+
     .about-card {
         border-radius: 20px;
         border: none;
@@ -132,8 +125,7 @@
         transform: translateY(-5px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     }
-    
-    /* Sections */
+
     .about-mission, .about-vision {
         background-color: rgba(13, 110, 253, 0.05);
         border-radius: 15px;
@@ -156,8 +148,7 @@
         border-radius: 50%;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Values Section */
+
     .value-card {
         background-color: white;
         border-radius: 10px;
@@ -169,8 +160,7 @@
         transform: scale(1.05);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Contact Section */
+
     .contact-section .btn {
         transition: all 0.3s ease;
         min-width: 150px;
@@ -180,8 +170,6 @@
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Hide Sidebar */
     #sidebar {
         display: none;
     }
@@ -191,8 +179,7 @@
         width: 100%;
         min-height: 80vh;
     }
-    
-    /* Responsive Design */
+
     @media (max-width: 768px) {
         .hero-divider {
             margin: 1rem auto;
