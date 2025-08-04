@@ -24,7 +24,7 @@ use App\Http\Controllers\Auth\NewRegisterController;
 Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
 Route::get('/pharmacy/inquiries', [InquiryController::class, 'index'])
     ->name('pharmacy.inquiries')
-    ->middleware('auth'); // فقط الصيدلي يمكنه رؤيتها
+    ->middleware('auth'); 
 
 // Routes pour la gestion des demandes
 Route::post('/inquiries/{id}/read', [InquiryController::class, 'markAsRead'])->name('inquiries.markRead')->middleware('auth');
@@ -32,7 +32,6 @@ Route::delete('/inquiries/{id}', [InquiryController::class, 'destroy'])->name('i
 Route::post('/inquiries/clear-read', [InquiryController::class, 'clearRead'])->name('inquiries.clearRead')->middleware('auth');
 
 Route::post('/store-cart', function (Request $request) {
-    // تخزين السلة في الـ session
     $cart = json_decode($request->cart_data, true);
     
     if (empty($cart)) {
@@ -49,8 +48,6 @@ Route::post('/update-cart', [OrderController::class, 'updateCart'])->name('updat
 // Route::get('/purchase', [OrderController::class, 'purchase'])->name('purchase');
 
 
-
-// مسارات المصادقة personnalisées (login/logout seulement)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', function () {
@@ -64,9 +61,7 @@ Route::post('/logout', function () {
 Route::get('/register', [NewRegisterController::class, 'showRegistrationForm'])->name('register')->middleware('guest');
 Route::post('/register', [NewRegisterController::class, 'register'])->middleware('guest');
 
-// مسارات الأدوية (للمستخدمين المسجلين فقط)
 Route::middleware('auth')->group(function () {
-    // مسارات الأدوية
     Route::get('/medications', [MedicationController::class, 'index'])->name('medications.index');
     Route::get('/medications/create', [MedicationController::class, 'create'])->name('medications.create');
     Route::post('/medications', [MedicationController::class, 'store'])->name('medications.store');
@@ -81,16 +76,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
         Route::post('/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     });
-    
-    // Gestion des articles
+ 
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
     Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
     Route::get('/articles/{id}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
     Route::put('/articles/{id}', [ArticleController::class, 'update'])->name('articles.update');
     Route::delete('/articles/{id}', [ArticleController::class, 'destroy'])->name('articles.destroy');
-    
-    // Commandes
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });
@@ -108,17 +100,11 @@ Route::post('/checkout', [OrderController::class, 'store'])->name('order.store')
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-
-// إرسال طلب الشراء (لا يسجل الطلب مباشرة في قاعدة البيانات)
 Route::post('/medications/purchase/order', [OrderController::class, 'store'])->name('medications.purchase.order');
-
-// مسارات الأدوية للمستخدمين بدون تسجيل دخول
 Route::get('/medications/purchase', [MedicationController::class, 'purchase'])->name('medications.purchase');
 Route::get('/medications/purchase/{id}', [MedicationController::class, 'purchaseShow'])->name('medications.purchase.show');
 Route::post('/medications/purchase/{id}/add', [CartController::class, 'addToCart'])->name('medications.purchase.add');
 Route::post('/medications/purchase/store', [MedicationController::class, 'purchaseStore'])->name('medications.purchase.store');
-
-
 Route::post('/purchase', [OrderController::class, 'store'])->name('order.store');
 Route::get('/purchase', [MedicationController::class, 'showMedications'])->name('purchase.page');
 Route::get('/checkout', function() {
@@ -131,13 +117,10 @@ Route::get('/purchase', [MedicationController::class, 'displayMedications'])->na
 Route::get('/medications/out-of-stock', [MedicationController::class, 'outOfStock'])->name('medications.out-of-stock');
 Route::post('/medications/notify-supplier/{id}', [MedicationController::class, 'notifySupplier'])->name('medications.notify-supplier');
 
-
-// الصفحة الرئيسية
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// صفحة الـ home
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 
@@ -170,41 +153,26 @@ Route::post('/prepare-checkout', function(Request $request) {
     if (!is_array($cartData)) {
         return redirect()->back()->with('error', 'بيانات السلة غير صالحة');
     }
-
-    // حفظ كامل السلة في الجلسة
     session(['cart' => $cartData]);
     
     return redirect('/checkout');
 });
-// في routes/web.php
-
-
 Route::get('/get-counts', [NotificationController::class, 'getCounts'])
-    ->middleware('auth'); // التأكد من أن المستخدم مسجل الدخول
+    ->middleware('auth');
 
-// Regrouper toutes les routes de commande pour éviter les conflits
 Route::group(['prefix' => 'commandes'], function () {
-    // Formulaire de validation de commande - assurer que c'est accessible sans authentification
     Route::post('/valider', [OrderController::class, 'store'])->name('commande.valider');
-    
-    // Routes de débogage pour tester le formulaire
     Route::get('/debug', function() {
         return 'Route de commande accessible';
     })->name('commande.debug');
-    
-    // Route pour voir les commandes (pour les pharmaciens)
     Route::get('/liste', [OrderController::class, 'index'])->name('commandes.liste')->middleware('auth');
-    
-    // Route pour mettre à jour le statut d'une commande
     Route::post('/statut/{id}', [OrderController::class, 'updateStatus'])->name('commande.statut')->middleware('auth');
 });
 
-// Routes pour le checkout et le panier
 Route::get('/checkout', function() {
     return view('checkout');
 })->name('checkout');
 
-// Autres routes existantes pour le panier
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
