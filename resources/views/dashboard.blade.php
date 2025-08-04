@@ -4,14 +4,11 @@
     <div class="container mt-4">
         <h1 class="mb-4">لوحة التحكم</h1>
 
-        <!-- التنبيهات -->
         @if ($medications->where('expiry_date', '<=', now()->addDays(30))->count() > 0)
             <div class="alert alert-warning" role="alert">
                 ⚠️ هناك أدوية ستنتهي صلاحيتها قريبًا!
             </div>
         @endif
-
-        <!-- عرض الأدوية -->
         <div class="row">
             @foreach ($medications as $medication)
                 <div class="col-md-4 mb-3">
@@ -33,7 +30,6 @@
             @endforeach
         </div>
 
-        <!-- رابط لإرسال طلب للمورد -->
         <a href="{{ route('medications.notify', $medication->id) }}" class="btn btn-warning">إرسال طلب للمورد</a>
     </div>
 @endsection
