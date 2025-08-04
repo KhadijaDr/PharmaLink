@@ -5,14 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - PharmaLink</title>
-    
-    <!-- Favicon -->
+
     <link rel="icon" href="{{ asset('logo.png') }}" type="image/png">
     <link rel="icon" href="{{ asset('logo.png') }}" type="image/png" sizes="32x32">
     <link rel="icon" href="{{ asset('logo.png') }}" type="image/png" sizes="96x96">
     <link rel="apple-touch-icon" href="{{ asset('logo.png') }}">
-    
-    <!-- ربط Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
