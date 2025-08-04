@@ -5,26 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>PharmaLink</title>
-    
-    <!-- Favicon - Tailles plus grandes -->
     <link rel="icon" href="{{ asset('logo.png') }}" type="image/png">
     <link rel="icon" href="{{ asset('logo.png') }}" type="image/png" sizes="48x48">
     <link rel="icon" href="{{ asset('logo.png') }}" type="image/png" sizes="96x96">
     <link rel="icon" href="{{ asset('logo.png') }}" type="image/png" sizes="144x144">
     <link rel="apple-touch-icon" href="{{ asset('logo.png') }}" sizes="180x180">
     <link rel="shortcut icon" href="{{ asset('logo.png') }}" type="image/png">
-    
-    <!-- تضمين ملفات CSS عبر Vite -->
+
     @vite('resources/js/app.js')
     @vite('resources/css/app.css')
-
-    <!-- تضمين Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
-    <!-- تضمين jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
@@ -106,7 +98,6 @@ body::before {
     z-index: -1;
 }
 
-/* Navbar Styling - Enhanced 3D Effect */
 .navbar-custom {
     background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
     transition: all var(--transition-normal) ease;
@@ -202,7 +193,6 @@ body::before {
     transform: translateY(-2px);
 }
 
-/* Sidebar - Modern Glassmorphic Design */
 #sidebar {
     width: 280px;
     min-height: 100vh;
@@ -434,7 +424,6 @@ body::before {
     box-shadow: var(--box-shadow-hover);
 }
 
-/* Card Styling with Modern Design */
 .card {
     border: none;
     border-radius: var(--border-radius-lg);
@@ -492,7 +481,6 @@ body::before {
     padding: 25px;
 }
 
-/* Alert Styling with Modern Design */
 .alert-container {
     max-width: 700px;
     width: 100%;
@@ -552,8 +540,6 @@ body::before {
     background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20,20 L80,80 M80,20 L20,80" stroke="%23ef476f" stroke-width="2" opacity="0.1"/></svg>');
     pointer-events: none;
 }
-
-/* Button Styling with Modern Design */
 .btn {
     border-radius: var(--border-radius);
     padding: 10px 16px;
@@ -643,7 +629,6 @@ body::before {
     box-shadow: 0 8px 25px rgba(6, 214, 160, 0.4);
 }
 
-/* Table Styling with Modern Design */
 .table {
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -681,7 +666,6 @@ body::before {
     border-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Form Styling with Modern Design */
 .form-control {
     border-radius: var(--border-radius);
     padding: 12px 16px;
@@ -716,7 +700,6 @@ body::before {
     box-shadow: 0 0 0 3px rgba(26, 147, 111, 0.2);
 }
 
-/* Footer Styling with Modern Design */
 .custom-footer {
     background: linear-gradient(135deg, var(--secondary-dark), var(--primary-dark));
     color: var(--text-light);
@@ -786,8 +769,6 @@ body::before {
     transform: scaleX(1);
     transform-origin: left;
 }
-
-/* Social Links with Modern Design */
 .social-links {
     margin-top: 20px;
 }
@@ -834,8 +815,6 @@ body::before {
     position: relative;
     z-index: 1;
 }
-
-/* Responsive Design Enhancements */
 @media (max-width: 992px) {
     #sidebar {
         width: 240px;
@@ -897,7 +876,6 @@ body::before {
     }
 }
 
-/* Animation Classes */
 .fade-in {
     animation: fadeIn 1s forwards;
 }
@@ -945,7 +923,6 @@ body::before {
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* Badge Styling with Modern Design */
 .badge {
     font-weight: 600;
     padding: 6px 12px;
@@ -990,7 +967,6 @@ body::before {
     color: white;
 }
 
-/* Pagination Styling with Modern Design */
 .pagination {
     box-shadow: var(--box-shadow);
     border-radius: var(--border-radius);
@@ -999,9 +975,9 @@ body::before {
 
 .alert-notifications {
         position: fixed;
-        top: 70px; /* يتناسب مع ارتفاع شريط التنقل */
+        top: 70px; 
         right: 20px;
-        z-index: 1050; /* أعلى من شريط التنقل */
+        z-index: 1050; 
         width: auto;
         max-width: 500px;
         animation: slideIn 0.3s ease-out;
@@ -1022,14 +998,12 @@ body::before {
     .alert-notifications .alert-danger {
         border-left: 4px solid #dc3545;
     }
-    
-    /* تأثير الظهور */
+
     @keyframes slideIn {
         from { transform: translateX(100%); opacity: 0; }
         to { transform: translateX(0); opacity: 1; }
     }
-    
-    /* التأكد من أن الإشعارات لا تظهر في القائمة الجانبية */
+ 
     #sidebar .alert-notifications {
         display: none !important;
     }
@@ -1053,17 +1027,14 @@ body::before {
         user-select: none;
     }
 
-    /* Ajouter une marge pour les titres des sections */
     .card-header h3, .card-header h4, h2.section-title, h3.section-title {
         margin-top: 20px;
     }
 
-    /* Ajouter des marges pour toutes les cartes و sections */
     .card, .section-content, .content-section {
         margin-top: 30px;
     }
-
-    /* Style pour le contenu principal */
+        
     #main-content {
         padding-top: 90px !important;
     }
@@ -1109,7 +1080,6 @@ body::before {
 </head>
 <body class="bg-light">
 
-    <!-- شريط التنقل -->
     <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{{ url('/pharmacy') }}">
@@ -1312,8 +1282,8 @@ body::before {
 
             if (toggleButton) {
                 toggleButton.addEventListener("click", function () {
-                    sidebar.classList.toggle("d-none"); // إخفاء أو إظهار القائمة
-                    mainContent.classList.toggle("w-100"); // توسيع الصفحة الرئيسية عند إخفاء القائمة
+                    sidebar.classList.toggle("d-none"); 
+                    mainContent.classList.toggle("w-100"); 
                 });
             }
             
@@ -1332,20 +1302,18 @@ body::before {
         });
         
         AOS.init({
-            duration: 1000, // مدة التأثير
-            easing: 'ease-in-out', // نوع التأثير
-            once: true, // التأثير مرة واحدة فقط
+            duration: 1000, 
+            easing: 'ease-in-out', 
+            once: true, 
         });
         function updateTime() {
     const now = new Date();
     const timeElement = document.querySelector('.current-time');
-    
-    // تنسيق الوقت باللغة الفرنسية
     const timeString = now.toLocaleTimeString('fr-FR', {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        hour12: false // لاستخدام تنسيق 24 ساعة
+        hour12: false 
     });
     
     timeElement.textContent = timeString;
@@ -1362,13 +1330,11 @@ body::before {
 timeElement.textContent = now.toLocaleDateString('fr-FR', options);
 }
 
-// تحديث الوقت كل ثانية
 setInterval(updateTime, 1000);
-updateTime(); // التشغيل الأولي
+updateTime(); 
 
-// تحديث الوقت كل ثانية
 setInterval(updateTime, 1000);
-updateTime(); // التشغيل الأولي
+updateTime(); 
 function fetchNewItemsCount() {
         fetch('/get-counts')
             .then(response => response.json())
@@ -1382,7 +1348,6 @@ function fetchNewItemsCount() {
                     ordersBadge.classList.add('d-none');
                 }
 
-                // تحديث badge الاستفسارات
                 const inquiriesBadge = document.getElementById('new-inquiries-badge');
                 if (data.new_inquiries > 0) {
                     inquiriesBadge.classList.remove('d-none');
