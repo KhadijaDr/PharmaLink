@@ -31,7 +31,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
-        /* الشريط العلوي بتصميم جذاب */
         .navbar-custom {
             background: linear-gradient(45deg, #28a745, #218838);
             transition: all 0.3s ease-in-out;
@@ -55,7 +54,6 @@
             border: none;
         }
 
-        /* تصميم جذاب للوحة التحكم مع زر إخفاء */
         #sidebar {
             width: 260px;
             min-height: 100vh;
