@@ -17,8 +17,6 @@ class Order extends Model
         'total_price',
         'user_id',
     ];
-
-    // ✅ العلاقة مع الأدوية
     public function medications()
     {
         return $this->belongsToMany(Medication::class, 'order_medications')
