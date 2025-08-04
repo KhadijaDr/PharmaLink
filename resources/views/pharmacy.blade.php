@@ -329,7 +329,6 @@
     <footer class="custom-footer text-white py-5 mt-5" style="background: linear-gradient(120deg, #0d2235 0%, #1976d2 100%); width: 100vw; margin-left: calc(50% - 50vw);">
         <div class="container-fluid px-5">
             <div class="row align-items-center gy-4">
-                <!-- Colonne Logo + Description -->
                 <div class="col-lg-4 col-md-12 d-flex flex-column align-items-lg-start align-items-center text-lg-start text-center mb-4 mb-lg-0">
                     <div class="d-flex align-items-center mb-2">
                         <img src="{{ asset('logo.png') }}" alt="Logo" style="height: 70px; margin-right: 18px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
@@ -337,7 +336,6 @@
                     </div>
                     <p class="footer-desc mt-2 mb-0">Votre santé, <span class="footer-highlight">notre priorité</span> : médicaments certifiés, livraison express, confidentialité et assistance 24/7.</p>
                 </div>
-                <!-- Colonne Liens -->
                 <div class="col-lg-4 col-md-12 d-flex flex-column align-items-center justify-content-center mb-4 mb-lg-0">
                     <div class="footer-links d-flex flex-row flex-wrap justify-content-center align-items-center gap-4 mb-2">
                         <a href="{{ route('about') }}" class="footer-link"><i class="fas fa-info-circle me-2"></i>À propos de nous</a>
@@ -347,7 +345,6 @@
                     <div class="footer-separator my-2"></div>
                     <p class="mb-0 mt-2 small">© 2025 PharmaLink. Tous droits réservés</p>
                 </div>
-                <!-- Colonne Réseaux sociaux -->
                 <div class="col-lg-4 col-md-12 d-flex justify-content-lg-end justify-content-center align-items-center">
                     <div class="social-links d-flex gap-3">
                         <a href="https://facebook.com" aria-label="Facebook" class="social-icon"><i class="fab fa-facebook-f"></i></a>
@@ -365,7 +362,7 @@
         direction: ltr;
         text-align: left;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        scroll-behavior: smooth; /* Ajout pour le défilement doux */
+        scroll-behavior: smooth;
     }
 
     :root {
@@ -763,7 +760,7 @@
         });
         
         window.addEventListener('scroll', animateOnScroll);
-        animateOnScroll(); // Exécuter une fois au chargement
+        animateOnScroll();
  
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -780,8 +777,7 @@
                         top: offsetPosition,
                         behavior: 'smooth'
                     });
-                    
-                    // Mettre à jour l'URL sans recharger la page
+
                     history.pushState(null, null, targetId);
                 }
             });
