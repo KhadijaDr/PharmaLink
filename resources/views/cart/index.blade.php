@@ -5,14 +5,12 @@
     <h1 class="text-center mb-4">🛒 السلة والأدوية المتاحة</h1>
 
     <div class="row">
-        <!-- 🔍 حقل البحث -->
         <div class="col-md-12 mb-3">
             <form action="{{ route('cart.index') }}" method="GET">
                 <input type="text" name="search" class="form-control" placeholder="🔎 ابحث عن دواء..." value="{{ request('search') }}">
             </form>
         </div>
 
-        <!-- 🔹 قائمة الأدوية المتاحة -->
         <div class="col-md-7">
             <h3 class="text-success">🩺 الأدوية المتاحة</h3>
             <div class="row">
@@ -36,7 +34,6 @@
             </div>
         </div>
 
-        <!-- 🔹 محتويات السلة -->
         <div class="col-md-5">
             <h3 class="text-primary">🛍️ محتويات السلة</h3>
             @if(session('cart') && count(session('cart')) > 0)
