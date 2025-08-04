@@ -53,7 +53,7 @@
         padding: 5rem 0 3rem 0;
         background-color: #f8f9fa;
         min-height: calc(100vh - 120px);
-        margin-top: 70px; /* يتناسب مع ارتفاع شريط التنقل */
+        margin-top: 70px; 
     }
 
     .policy-card {
@@ -95,12 +95,10 @@
         margin-bottom: 1rem;
     }
 
-    /* إخفاء الشريط الجانبي */
     #sidebar {
         display: none !important;
     }
 
-    /* توسيع المحتوى الرئيسي */
     #main-content {
         margin-left: 0 !important;
         width: 100% !important;
