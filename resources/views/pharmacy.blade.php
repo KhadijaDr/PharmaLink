@@ -19,13 +19,11 @@
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
-                <!-- L'image est déjà en arrière-plan -->
             </div>
         </div>
     </div>
 </div>
 
-<!-- Icônes de Services Rapides -->
 <div class="container my-5">
     <div class="row g-4 text-center">
         <div class="col-md-3">
@@ -59,7 +57,6 @@
     </div>
 </div>
 
-<!-- Barre de Recherche -->
 <div class="container my-5">
     <div class="search-container bg-light p-4 rounded shadow-sm">
         <h4 class="text-center mb-3"><i class="fas fa-search"></i> Recherchez dans les articles et médicaments</h4>
@@ -70,7 +67,6 @@
     </div>
 </div>
 
-<!-- Section Articles -->
 <div class="container my-5" id="articles-section">
     <div class="section-heading d-flex align-items-center mb-4">
         <div class="section-line me-3"></div>
@@ -107,7 +103,6 @@
     </div>
 </div>
 
-<!-- Section Médicaments Populaires -->
 <div class="bg-light py-5 my-5">
     <div class="container">
         <div class="section-heading d-flex align-items-center mb-4">
@@ -117,7 +112,6 @@
         <p class="text-muted mb-4">Découvrez notre sélection de médicaments les plus demandés avec livraison rapide</p>
         
         <div class="row row-cols-1 row-cols-md-4 g-4">
-            <!-- Médicament 1 -->
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm product-card">
                     <div class="position-relative">
@@ -136,8 +130,7 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Médicament 2 -->
+
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm product-card">
                     <div class="position-relative">
@@ -156,8 +149,7 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Médicament 3 -->
+
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm product-card">
                     <div class="position-relative">
@@ -176,8 +168,7 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Médicament 4 -->
+
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm product-card">
                     <div class="position-relative">
@@ -206,7 +197,6 @@
     </div>
 </div>
 
-<!-- Section Achat de Médicaments -->
 <div class="container my-5">
     <div class="row align-items-center">
         <div class="col-lg-6 mb-4 mb-lg-0">
@@ -249,7 +239,6 @@
     </div>
 </div>
 
-<!-- Section Contact -->
 <div class="container my-5" id="contact-section">
     <div class="row">
         <div class="col-lg-5 mb-4 mb-lg-0">
@@ -336,7 +325,6 @@
     </div>
 </div>
 
-<!-- Footer Principal -->
 @if(request()->is('pharmacy') || request()->is('about') || request()->is('privacy-policy') || request()->is('terms') || request()->is('purchase') || request()->routeIs('articles.show'))
     <footer class="custom-footer text-white py-5 mt-5" style="background: linear-gradient(120deg, #0d2235 0%, #1976d2 100%); width: 100vw; margin-left: calc(50% - 50vw);">
         <div class="container-fluid px-5">
@@ -373,23 +361,20 @@
 @endif
 
 <style>
-    /* Support RTL pour l'arabe */
     body {
         direction: ltr;
         text-align: left;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         scroll-behavior: smooth; /* Ajout pour le défilement doux */
     }
-    
-    /* Couleurs personnalisées */
+
     :root {
         --primary-color: #0d6efd;
         --secondary-color: #6c757d;
         --light-color: #f8f9fa;
         --dark-color: #212529;
     }
-    
-    /* Section Hero */
+
     .hero-section {
         background: url('{{ asset('storage/images/pexels-hoinommm-16453354.jpg') }}') center/cover no-repeat;
         padding: 100px 0;
@@ -410,8 +395,7 @@
         bottom: 0;
         background: linear-gradient(135deg, rgba(218, 221, 226, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
     }
-    
-    /* En-têtes de section */
+
     .section-heading {
         position: relative;
         padding-top: 30px;
@@ -425,10 +409,9 @@
     }
     
     #articles-section, #contact-section {
-        scroll-margin-top: 150px; /* Pour les ancres et le défilement */
+        scroll-margin-top: 150px;
     }
-    
-    /* Style des cartes */
+
     .card {
         border-radius: 12px;
         overflow: hidden;
@@ -450,8 +433,7 @@
     .card:hover .card-img-top {
         transform: scale(1.05);
     }
-    
-    /* Cartes de service */
+
     .service-card {
         background-color: white;
         transition: all 0.3s ease;
@@ -463,8 +445,7 @@
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         border-color: var(--primary-color);
     }
-    
-    /* Icônes de contact */
+
     .contact-icon {
         width: 36px;
         height: 36px;
@@ -474,8 +455,7 @@
         align-items: center;
         justify-content: center;
     }
-    
-    /* Navigation */
+
     .navbar {
         padding: 15px 0;
         box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
@@ -499,8 +479,7 @@
         font-weight: 600;
         background-color: rgba(13, 110, 253, 0.1);
     }
-    
-    /* Éléments de recherche */
+  
     #searchInput {
         border-radius: 5px 0 0 5px;
         border: 1px solid #ced4da;
@@ -516,8 +495,7 @@
         border-radius: 0 5px 5px 0;
         padding: 12px 24px;
     }
-    
-    /* Formulaires */
+  
     .form-control {
         padding: 12px 16px;
         border-radius: 8px;
@@ -544,8 +522,7 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Pagination */
+
     .pagination {
         justify-content: center;
         margin-top: 40px;
@@ -562,8 +539,7 @@
         margin: 0 4px;
         border-radius: 6px;
     }
-    
-    /* Responsive */
+   
     @media (max-width: 768px) {
         .hero-section {
             padding: 80px 0;
@@ -578,8 +554,7 @@
             margin-top: 60px;
         }
     }
-    
-    /* Animation des icônes */
+  
     .service-card i {
         transition: transform 0.3s;
     }
@@ -587,8 +562,7 @@
     .service-card:hover i {
         transform: scale(1.1);
     }
-    
-    /* Sidebar cachée */
+
     #sidebar {
         display: none;
     }
@@ -597,8 +571,7 @@
         margin-left: 0;
         width: 100%;
     }
-    
-    /* Style des cartes produits */
+  
     .product-card .card-img-top {
         height: 180px;
         object-fit: cover;
@@ -609,7 +582,6 @@
         transition: transform 0.3s ease;
     }
 
-    /* Styles supplémentaires pour le footer */
     .custom-footer {
         background: linear-gradient(120deg, #0d2235 0%, #1976d2 100%);
         color: #fff;
@@ -742,7 +714,6 @@
 </style>
 
 <script>
-    // Recherche en direct pour les articles
     document.getElementById('searchInput').addEventListener('input', function () {
         let query = this.value.toLowerCase();
         let articles = document.querySelectorAll('.article-card');
@@ -758,8 +729,7 @@
             }
         });
     });
-    
-    // Ajustement du défilement pour tenir compte des barres de navigation fixes
+
     document.addEventListener('DOMContentLoaded', function() {
         const currentLocation = window.location.pathname;
         const navLinks = document.querySelectorAll('.nav-link');
@@ -771,8 +741,7 @@
                 link.classList.add('active');
             }
         });
-        
-        // Animation au défilement
+
         const animateOnScroll = function() {
             const elements = document.querySelectorAll('.service-card, .card');
             
@@ -786,8 +755,7 @@
                 }
             });
         };
-        
-        // Initialiser les éléments comme invisibles
+
         document.querySelectorAll('.service-card, .card').forEach(el => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(20px)';
@@ -796,8 +764,7 @@
         
         window.addEventListener('scroll', animateOnScroll);
         animateOnScroll(); // Exécuter une fois au chargement
-        
-        // Gestion du défilement doux pour les ancres avec offset pour les barres de navigation fixes
+ 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
