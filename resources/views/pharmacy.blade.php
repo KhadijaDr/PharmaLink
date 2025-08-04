@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Section Hero avec Image de Fond -->
+
 <div class="hero-section position-relative" style="margin-top: 50px; background-image: url('{{ asset('images/pharmacie.jpg') }}'); background-size: cover; background-position: center; height: 600px;">
     <div class="hero-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);"></div>
     <div class="container py-5">
