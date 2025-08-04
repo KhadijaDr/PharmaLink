@@ -7,14 +7,12 @@
 
 // class OrderController extends Controller
 // {
-//     // عرض جميع الطلبات
 //     public function index()
 //     {
 //         $orders = Order::all();
 //         return view('orders.index', compact('orders'));
 //     }
 
-//     // الموافقة على الطلب
 //     public function validateOrder($id)
 //     {
 //         $order = Order::findOrFail($id);
@@ -24,7 +22,6 @@
 //         return redirect()->route('orders.index')->with('success', '✅ تمت الموافقة على الطلب بنجاح');
 //     }
 
-//     // رفض الطلب
 //     public function rejectOrder($id)
 //     {
 //         $order = Order::findOrFail($id);
@@ -34,10 +31,8 @@
 //         return redirect()->route('orders.index')->with('error', '❌ تم رفض الطلب');
 //     }
 
-//     // تخزين الطلب
 //     public function store(Request $request)
 // {
-//     // التحقق من المدخلات
 //     $request->validate([
 //         'customer_name' => 'required|string|max:255',
 //         'customer_phone' => 'required|string|max:20',
@@ -46,15 +41,12 @@
 //         'cart_data' => 'required', // ✅ إضافة التحقق من السلة
 //     ]);
 
-//     // رفع الوصفة الطبية
 //     $filePath = $request->hasFile('prescription') 
 //                 ? $request->file('prescription')->store('prescriptions', 'public') 
 //                 : null;
 
-//     // تحويل بيانات السلة من JSON إلى Array
 //     $cart = json_decode($request->cart_data, true);
 
-//     // إدخال الطلبات في قاعدة البيانات
 //     foreach ($cart as $id => $details) {
 //         Order::create([
 //             'customer_name' => $request->customer_name,
@@ -68,7 +60,6 @@
 //         ]);
 //     }
 
-//     // تفريغ السلة بعد الطلب
 //     session()->forget('cart');
 
 //     return redirect()->route('medications.purchase')->with('success', '✅ تم إرسال الطلب بنجاح.');
@@ -101,10 +92,8 @@
 //             'total_price' => 'required|numeric',
 //         ]);
 
-//         // حفظ صورة الوصفة الطبية
 //         $imagePath = $request->file('prescription')->store('prescriptions', 'public');
 
-//         // إنشاء الطلب
 //         Cmd::create([
 //             'customer_name' => $validated['customer_name'],
 //             'address' => $validated['address'],
@@ -161,11 +150,9 @@ class OrderController extends Controller
             \Log::info('Validation réussie, traitement du panier');
             
             try {
-                // Calcul du prix total
+
                 $totalPrice = $this->calculateTotalPrice($cart);
                 \Log::info('Prix total calculé', ['total' => $totalPrice]);
-                
-                // Données pour la création de la commande
                 $commandeData = [
                     'customer_name' => $request->input('name'),
                     'phone' => $request->input('phone'),
@@ -175,8 +162,7 @@ class OrderController extends Controller
                     'total_price' => $totalPrice,
                     'status' => 'En attente',
                 ];
-                
-                // Ajouter explicitement user_id et pharmacist_id
+
                 if (auth()->check()) {
                     $commandeData['pharmacist_id'] = auth()->id();
                     $commandeData['user_id'] = auth()->id();
@@ -185,7 +171,6 @@ class OrderController extends Controller
                     $commandeData['user_id'] = null;
                 }
                 
-                // Création de la commande
                 $commande = new Cmd();
                 foreach ($commandeData as $key => $value) {
                     $commande->{$key} = $value;
