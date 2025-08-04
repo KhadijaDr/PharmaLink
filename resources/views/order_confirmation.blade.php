@@ -26,7 +26,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // تفريغ السلة المحلية عند زيارة صفحة التأكيد
         localStorage.removeItem('pharmacy_cart');
     });
 </script>
