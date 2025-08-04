@@ -16,16 +16,14 @@ class MedicationController extends Controller
 {
     public function index(Request $request)
     {
-        // استلام قيمة البحث من المستخدم
+       
         $search = $request->get('search');
-        
-        // استخدام Eloquent للبحث عن الأدوية بناءً على الاسم أو الوصف
         $medications = Medication::query()
             ->when($search, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%")
                              ->orWhere('description', 'like', "%{$search}%");
             })
-            ->paginate(8); // ترقيم الصفحة
+            ->paginate(8); 
     
         return view('medications.index', compact('medications'));
     }
@@ -181,8 +179,6 @@ public function showExpiryAlert()
 public function notifySupplier($id)
 {
     $medication = Medication::findOrFail($id);
-
-    // تحقق مما إذا كانت الكمية تساوي 0
     if ($medication->quantity == 0) {
         if (filter_var($medication->supplier, FILTER_VALIDATE_EMAIL)) {
             Mail::raw("Veuillez fournir davantage de {$medication->name}.", function ($message) use ($medication) {
@@ -198,10 +194,6 @@ public function notifySupplier($id)
         return back()->with('error', "La quantité de {$medication->name} n'est pas encore épuisée.");
     }
 }
-
-
-// في MedicationController
-
 
 public function purchase(Request $request)
 {
@@ -243,15 +235,12 @@ public function purchaseStore(Request $request)
         'prescription' => 'nullable|file|mimes:jpg,png,pdf|max:2048'
     ]);
 
-    // Récupérer le médicament et vérifier le stock disponible
     $medication = Medication::findOrFail($request->medication_id);
-    
-    // Vérifier si la quantité demandée est disponible
+
     if ($medication->quantity < $request->quantity) {
         return back()->with('error', 'La quantité demandée n\'est pas disponible en stock. Stock actuel: ' . $medication->quantity);
     }
 
-    // Créer la commande
     $order = new Order();
     $order->medication_id = $request->medication_id;
     $order->quantity = $request->quantity;
@@ -264,11 +253,9 @@ public function purchaseStore(Request $request)
     }
 
     $order->status = 'en attente';
-    
-    // Déduire la quantité du stock
+
     $medication->quantity -= $request->quantity;
-    
-    // Enregistrer les modifications dans la base de données (transaction)
+ 
     DB::beginTransaction();
     try {
         $medication->save();
