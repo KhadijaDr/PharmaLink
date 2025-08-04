@@ -30,8 +30,7 @@ class InquiryController extends Controller
 
         return redirect()->back()->with('success', 'Votre demande a été envoyée avec succès !');
     }
-    
-    // Méthode pour marquer une demande comme lue
+
     public function markAsRead($id)
     {
         $inquiry = Inquiry::findOrFail($id);
@@ -40,8 +39,7 @@ class InquiryController extends Controller
         
         return redirect()->back()->with('success', 'La demande a été marquée comme lue');
     }
-    
-    // Méthode pour vider/supprimer une demande
+
     public function destroy($id)
     {
         $inquiry = Inquiry::findOrFail($id);
@@ -49,8 +47,6 @@ class InquiryController extends Controller
         
         return redirect()->back()->with('success', 'La demande a été supprimée avec succès');
     }
-    
-    // Méthode pour vider toutes les demandes traitées (lues)
     public function clearRead()
     {
         Inquiry::where('read', true)->delete();
