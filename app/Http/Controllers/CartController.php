@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
-    // عرض السلة وقائمة الأدوية
+   
     public function index(Request $request)
     {
         $search = $request->query('search');
@@ -20,7 +20,7 @@ class CartController extends Controller
         return view('cart.index', compact('medications', 'cart'));
     }
 
-    // إضافة دواء إلى السلة
+  
     public function addToCart(Request $request, $id)
     {
         $medication = Medication::findOrFail($id);
@@ -41,7 +41,7 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'تمت إضافة الدواء إلى السلة!');
     }
 
-    // إزالة دواء من السلة
+
     public function removeFromCart($id)
     {
         $cart = Session::get('cart', []);
@@ -52,14 +52,12 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'تمت إزالة الدواء من السلة!');
     }
 
-    // عرض صفحة إتمام الشراء
     public function checkout()
     {
         $cart = Session::get('cart', []);
         return view('cart.checkout', compact('cart'));
     }
 
-    // معالجة الطلب وحفظه في قاعدة البيانات
     public function placeOrder(Request $request)
     {
         $request->validate([
