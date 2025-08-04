@@ -206,19 +206,15 @@
     </style>
     
     <script>
-        // Script pour gérer la sélection d'images par défaut
+        
         document.addEventListener('DOMContentLoaded', function() {
             const fileInput = document.getElementById('image');
             const defaultImgOptions = document.querySelectorAll('input[name="default_image"]');
-            
-            // Déselectionner l'image par défaut quand une image est téléchargée
             fileInput.addEventListener('change', function() {
                 if (this.files.length > 0) {
                     defaultImgOptions.forEach(option => option.checked = false);
                 }
             });
-            
-            // Vider l'input file quand une image par défaut est sélectionnée
             defaultImgOptions.forEach(option => {
                 option.addEventListener('change', function() {
                     if (this.checked) {
@@ -226,8 +222,6 @@
                     }
                 });
             });
-            
-            // Ajouter une classe active à l'image sélectionnée
             const defaultImgLabels = document.querySelectorAll('.default-image-option label');
             defaultImgLabels.forEach(label => {
                 label.addEventListener('click', function() {
