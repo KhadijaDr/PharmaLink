@@ -12,14 +12,11 @@
             </div>
             
             <div class="card-body p-4 p-lg-5">
-                <!-- Bouton de navigation -->
                 <div class="d-flex justify-content-end mb-4">
                     <a href="{{ route('articles.index') }}" class="btn btn-outline-primary btn-articles">
                         <i class="fas fa-list-ul me-2"></i>Voir tous les articles
                     </a>
                 </div>
-                
-                <!-- Messages d'erreur -->
                 @if ($errors->any())
                     <div class="alert custom-alert-danger mb-4 animated-alert">
                         <div class="alert-icon">
@@ -35,21 +32,18 @@
                         </div>
                     </div>
                 @endif
-                
-                <!-- Formulaire -->
+
                 <form action="{{ route('articles.store') }}" method="POST" enctype="multipart/form-data" class="article-form">
                     @csrf
                     
                     <div class="row">
-                        <!-- Titre de l'article -->
                         <div class="col-12 mb-4">
                             <div class="form-floating form-group-icon">
                                 <input type="text" name="title" class="form-control form-control-lg" id="title" placeholder="Titre de l'article" required>
                                 <label for="title"><i class="fas fa-heading me-2"></i>Titre de l'article</label>
                             </div>
                         </div>
-                        
-                        <!-- Contenu de l'article -->
+
                         <div class="col-12 mb-4">
                             <div class="form-group">
                                 <label for="content" class="form-label mb-2">
@@ -58,8 +52,7 @@
                                 <textarea name="content" id="content" class="form-control" rows="8" placeholder="Rédigez votre article ici..." required></textarea>
                             </div>
                         </div>
-                        
-                        <!-- Image de l'article -->
+
                         <div class="col-12 mb-4">
                             <div class="image-upload-container">
                                 <label for="image" class="form-label mb-2">
@@ -75,8 +68,7 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Bouton de soumission -->
+
                     <div class="mt-4 pt-2">
                         <button type="submit" class="btn btn-submit w-100 py-3">
                             <i class="fas fa-paper-plane me-2"></i>Publier l'article
@@ -89,7 +81,7 @@
 </div>
 
 <style>
-    /* Configuration de base et arrière-plan */
+
     .add-article-container {
         background: linear-gradient(135deg, rgba(245, 247, 250, 0.92), rgba(255, 255, 255, 0.95)), 
                     url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
@@ -100,8 +92,6 @@
         padding: 20px 0;
         font-family: 'Poppins', sans-serif;
     }
-    
-    /* Carte principale avec animation */
     .main-card {
         border-radius: 16px;
         overflow: hidden;
@@ -119,8 +109,7 @@
             transform: translateY(0);
         }
     }
-    
-    /* En-tête avec dégradé */
+
     .card-header.bg-gradient {
         background: linear-gradient(135deg, #4c75a3, #5b86e5);
     }
@@ -129,8 +118,7 @@
         font-weight: 600;
         letter-spacing: 0.5px;
     }
-    
-    /* Alerte personnalisée */
+
     .custom-alert-danger {
         background-color: rgba(255, 235, 238, 0.9);
         border-left: 5px solid #f44336;
@@ -174,8 +162,7 @@
             transform: translateX(0);
         }
     }
-    
-    /* Bouton de navigation */
+
     .btn-articles {
         border-radius: 30px;
         padding: 8px 20px;
@@ -188,8 +175,7 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 15px rgba(75, 102, 255, 0.2);
     }
-    
-    /* Champs du formulaire */
+
     .form-floating .form-control {
         border-radius: 10px;
         padding: 1.2rem 1rem;
@@ -223,8 +209,7 @@
         box-shadow: 0 0 0 0.2rem rgba(91, 134, 229, 0.15);
         background-color: #fff;
     }
-    
-    /* Upload d'image personnalisé */
+
     .custom-file-upload {
         position: relative;
         border-radius: 10px;
@@ -272,7 +257,6 @@
         cursor: pointer;
     }
     
-    /* Bouton de soumission */
     .btn-submit {
         background: linear-gradient(135deg, #28a745, #20c997);
         color: white;
@@ -294,8 +278,7 @@
     .btn-submit:active {
         transform: translateY(1px);
     }
-    
-    /* Responsive design */
+
     @media (max-width: 768px) {
         .card-body {
             padding: 2rem !important;
@@ -306,7 +289,6 @@
         }
     }
     
-    /* JavaScript pour l'aperçu des images */
     document.addEventListener('DOMContentLoaded', function() {
         const fileInput = document.getElementById('image');
         const filePreview = document.getElementById('file-preview');
@@ -328,7 +310,6 @@
     });
 </style>
 
-<!-- Ajout des scripts FontAwesome -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('image');
@@ -343,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <img src="${e.target.result}" alt="Aperçu" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
                     <p class="mt-2 mb-0">${this.files[0].name}</p>
                 `;
-            }.bind(this); // استخدام bind للوصول إلى this الصحيح
+            }.bind(this); 
             
             reader.readAsDataURL(this.files[0]);
         }
