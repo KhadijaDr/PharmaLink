@@ -81,7 +81,6 @@
                                     </span>
                                 </td>
                                 <td class="actions-cell">
-                                    <!-- تحديث حالة الطلب -->
                                     <form action="{{ route('orders.updateStatus', $order->id) }}" method="POST" class="status-update-form">
                                         @csrf
                                         <div class="form-group">
@@ -110,20 +109,15 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Pagination -->
             <div class="pagination-container">
                 {{ $orders->links() }}
             </div>
         </div>
     </div>
-
-    <!-- إضافة Font Awesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        /* ======= تنسيقات أساسية ======= */
         .orders-dashboard {
             position: relative;
             padding: 2rem;
@@ -147,7 +141,6 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
-        /* صورة الخلفية */
         .page-background {
             position: fixed;
             top: 0;
@@ -172,7 +165,6 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* ======= عنوان الصفحة ======= */
         .dashboard-title {
             font-family: 'Montserrat', sans-serif;
             color: #2c3e50;
@@ -192,7 +184,6 @@
             top: 0;
         }
 
-        /* ======= تنسيق شريط البحث ======= */
         .search-form {
             margin-bottom: 2rem;
         }
@@ -229,7 +220,6 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
 
-        /* ======= تنسيق الجدول ======= */
         .orders-table-container {
             border-radius: 15px;
             overflow: hidden;
@@ -277,7 +267,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        /* تنسيق خلايا محددة */
         .customer-name {
             font-weight: 600;
             color: #2c3e50;
@@ -295,7 +284,6 @@
             font-weight: 600;
         }
 
-        /* تنسيق الوصفة الطبية */
         .prescription-btn {
             background-color: #3498db;
             color: white;
@@ -323,7 +311,6 @@
             border-radius: 15px;
         }
 
-        /* تنسيق قائمة الأدوية */
         .medications-cell {
             padding: 10px 15px;
         }
@@ -366,7 +353,6 @@
             font-size: 0.8rem;
         }
 
-        /* تنسيق حالة الطلب */
         .status-badge {
             display: inline-block;
             padding: 8px 15px;
@@ -391,7 +377,6 @@
             color: white;
         }
 
-        /* تنسيق تحديث الحالة */
         .status-update-form {
             display: flex;
             flex-direction: column;
@@ -431,7 +416,6 @@
             color: white;
         }
 
-        /* ======= حالة عدم وجود طلبات ======= */
         .no-orders {
             padding: 3rem !important;
         }
@@ -453,7 +437,6 @@
             font-weight: 500;
         }
 
-        /* ======= تنسيق الترقيم ======= */
         .pagination-container {
             margin-top: 1.5rem;
             display: flex;
@@ -508,7 +491,6 @@
             background-color: #ecf0f1;
         }
 
-        /* ======= تأثيرات الحركة ======= */
         .animated-page {
             opacity: 0;
             animation: fadeInUp 0.8s ease forwards;
@@ -540,7 +522,6 @@
             }
         }
 
-        /* تخصيص scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -559,7 +540,6 @@
             background: #2980b9;
         }
 
-        /* ======= تحسينات للأجهزة المحمولة ======= */
         @media (max-width: 992px) {
             .orders-dashboard {
                 padding: 1rem;
@@ -600,7 +580,6 @@
             }
         }
 
-        /* تحسينات أخرى */
         ::selection {
             background-color: #3498db;
             color: white;
@@ -609,7 +588,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // تفعيل Tooltips
     document.addEventListener('DOMContentLoaded', function() {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (tooltipTriggerEl) {
