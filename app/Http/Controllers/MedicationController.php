@@ -16,15 +16,13 @@ class MedicationController extends Controller
 {
     public function index(Request $request)
     {
-       
         $search = $request->get('search');
         $medications = Medication::query()
             ->when($search, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%")
                              ->orWhere('description', 'like', "%{$search}%");
             })
-            ->paginate(8); 
-    
+            ->paginate(8);     
         return view('medications.index', compact('medications'));
     }
 
@@ -58,13 +56,9 @@ class MedicationController extends Controller
             if (file_exists($sourcePath)) {
                 $fileName = 'default_' . time() . '_' . $defaultImage;
                 $destinationPath = storage_path('app/public/medications/' . $fileName);
-                
-                // Créer le dossier s'il n'existe pas
                 if (!file_exists(storage_path('app/public/medications'))) {
                     mkdir(storage_path('app/public/medications'), 0755, true);
                 }
-                
-                // Copier le fichier
                 copy($sourcePath, $destinationPath);
                 $imagePath = 'medications/' . $fileName;
             }
@@ -132,13 +126,10 @@ public function update(Request $request, $id)
         if (file_exists($sourcePath)) {
             $fileName = 'default_' . time() . '_' . $defaultImage;
             $destinationPath = storage_path('app/public/medications/' . $fileName);
-            
-            // Créer le dossier s'il n'existe pas
             if (!file_exists(storage_path('app/public/medications'))) {
                 mkdir(storage_path('app/public/medications'), 0755, true);
             }
-            
-            // Copier le fichier
+
             copy($sourcePath, $destinationPath);
             $imageData['image'] = 'medications/' . $fileName;
         }
